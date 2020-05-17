@@ -1,0 +1,36 @@
+---
+ - name: Getting localhost facts
+   hosts: localhost
+   gather_facts: false
+   tasks: 
+    - name: checking localhost date fact
+      setup: 
+         filter: "ansible_date_time"
+         gather_subset: "!all"
+    
+    - name: setting a localhost fact variable
+      set_fact: 
+           date: "{{ ansible_date_time.date }}"
+    
+    - name: Creating a backup directory
+      file: 
+        path: /etc/ansible/My_Network/Configs/Backups/{{hostvars.localhost.date}}
+        state: directory
+    
+   run_once: true
+
+ - name: Getting router configurations
+   hosts: ROUTERS
+   order: sorted
+   gather_facts: false
+   tasks: 
+    - name: Executing Show run command
+      ios_command: 
+          commands: show run
+      register: config
+    
+    - name: Copy the show run output to a file
+      copy:
+        content: "{{config.stdout[0]}}"
+        dest: /etc/ansible/My_Network/Configs/Backups/{{inventory_hostname}}-{{hostvars.localhost.date}}-config.txt
+...

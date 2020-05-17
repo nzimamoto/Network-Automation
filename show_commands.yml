@@ -1,0 +1,24 @@
+---
+ - name: Executing show commands for routers
+   hosts: ROUTERS
+   order: sorted
+   gather_facts: false
+   vars: 
+      - command_list:
+             - show ip interface brief | in up
+             - show clock
+             - show environment all
+   tasks: 
+    - name: Running multiple show commands to routers
+      ios_command: 
+         commands: "{{ command_list }}"
+      #when: ansible_net_hostname == 'router1'
+      register: output
+
+    - name: Saving show commands ouput to a file
+      template: 
+         src: /etc/ansible/My_Network/Network-Programmability/Network-Automation/show_commands.j2
+         dest: /etc/ansible/My_Network/Configs/Backups/{{ inventory_hostname }}-show-commands.txt
+    #  when: ansible_net_hostname == 'router1'
+      
+    

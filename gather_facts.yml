@@ -1,0 +1,36 @@
+---
+ - name: Getting router facts
+   hosts: ROUTERS
+   order: sorted
+   gather_facts: false
+   tasks: 
+    - name: Testing reachability of devices from management host
+      ping: 
+
+    - name: Debug hostnames from inventory
+      debug: 
+        msg: "Hostname is {{ inventory_hostname }}"
+
+    - name: Gather device facts
+      ios_facts: 
+      when: ansible_net_hostname=='router1'
+      register: result
+
+    - name: Display facts
+      debug: 
+        var: result
+    
+ - name: Getting localhost facts
+   hosts: localhost
+   gather_facts: false
+   tasks: 
+    - name: checking all facts
+      setup: 
+         filter: "ansible_date_time"
+         gather_subset: "!all"
+      register: localhostfact
+    
+    - name: Display localhost facts
+      debug: 
+        var: localhostfact
+...

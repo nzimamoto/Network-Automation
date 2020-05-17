@@ -1,0 +1,19 @@
+---
+ - name: Pushing router config from a text file
+   hosts: ROUTERS
+   order: sorted
+   gather_facts: false
+   tasks: 
+    - name: Obtaining source file
+      ios_config: 
+        src: /etc/ansible/My_Network/Configs/"{{ inventory_hostname }}".txt
+    
+    - name: Saving device configuration
+      ios_config: 
+        save_when: modified
+
+    - name: Diff againt running
+      ios_config: 
+        diff_against: startup
+      when: inventory_hostname == "router1"
+...

@@ -1,0 +1,35 @@
+---
+  all:
+     hosts:
+        192.168.1.100
+     children:
+        ROUTER1:  
+           hosts: 
+              router1: 
+               ansible_host: 192.168.1.101
+               ansible_net_hostname: router1
+
+        ROUTER2: 
+           hosts: 
+              router2: 
+                ansible_host: 192.168.1.102
+                ansible_net_hostname: router2 
+
+        ROUTER3: 
+            hosts: 
+              router3: 
+                ansible_host: 192.168.1.104
+                ansible_net_hostname: router3 
+
+        ROUTERS: 
+          children: 
+            ROUTER1: 
+            ROUTER2: 
+            ROUTER3: 
+          vars: 
+            ansible_network_os: ios
+            ansible_user: root
+            ansible_connection: network_cli
+             
+
+...
